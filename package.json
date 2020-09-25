@@ -124,6 +124,11 @@
     },
     "directories": {
       "output": "release/"
-    }
+    },
+    "publish": [{
+        "provider": "github",
+        "owner": "Tomekske",
+        "repo": "AutoUpdater"
+    }]
   }
 }
