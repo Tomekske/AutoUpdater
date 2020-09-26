@@ -13,6 +13,7 @@ import { Collection } from './shared/database/collection';
 import { Album } from './shared/database/album';
 import { cpuUsage, electron } from 'process';
 import { BaseFlow } from './shared/database/baseFlow';
+import { autoUpdater } from 'electron-updater';
 
 let win: BrowserWindow = null;
 const args = process.argv.slice(1),
@@ -89,6 +90,32 @@ try {
       createWindow();
     }
   });
+
+  autoUpdater.on('checking-for-update', () => {
+    console.log("Checking for updates");
+  });
+
+  autoUpdater.on('update-available', (info) => {
+    console.log("Update available");
+  });
+
+  autoUpdater.on('update-not-available', (info) => {
+    console.log("Update not available");
+  });
+
+  autoUpdater.on('error', (error) => {
+    console.log("error");
+  });
+
+  autoUpdater.on('download-progress', (progress) => {
+    console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}% (${progress.transferred})`);
+  });
+
+  autoUpdater.on('update-download', (info) => {
+    console.log("Update will be installed");
+    autoUpdater.quitAndInstall();
+  });
+
 
   ipcMain.on('save-settings', (event, args) => {
     Logger.Log().debug('SAVE SETTINGS');
