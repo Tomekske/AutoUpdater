@@ -93,26 +93,32 @@ try {
 
   autoUpdater.on('checking-for-update', () => {
     console.log("Checking for updates");
+    Logger.Log().debug("Checking for updates");
   });
 
   autoUpdater.on('update-available', (info) => {
     console.log("Update available");
+    Logger.Log().debug("Update available");
   });
 
   autoUpdater.on('update-not-available', (info) => {
     console.log("Update not available");
+    Logger.Log().debug("Update not available");
   });
 
   autoUpdater.on('error', (error) => {
     console.log("error");
+    Logger.Log().debug("error");
   });
 
   autoUpdater.on('download-progress', (progress) => {
     console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}% (${progress.transferred})`);
+    Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}% (${progress.transferred})`);
   });
 
   autoUpdater.on('update-download', (info) => {
     console.log("Update will be installed");
+    Logger.Log().debug("Update will be installed");
     autoUpdater.quitAndInstall();
   });
 
