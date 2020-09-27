@@ -9,7 +9,7 @@ import { AppConfig } from '../environments/environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  constructor(private electronService: ElectronService, private translate: TranslateService) {
+  constructor(private electron: ElectronService, private translate: TranslateService) {
     this.translate.setDefaultLang('en');
 
     //logger.Log().warn("Logger TEST");
@@ -61,4 +61,13 @@ export class AppComponent {
     this.isShowLibrary = $event;
     console.log(this.isShowLibrary);
   }
+
+  ngAfterViewInit() {
+    console.log('weeerkt');
+    this.electron.ipcRenderer.on('msg', (event, text) => {
+      console.log(`WORKS: ${text}`);
+    });
+  }
+
+
 }

@@ -16,6 +16,7 @@ import { BaseFlow } from './shared/database/baseFlow';
 import { autoUpdater } from 'electron-updater';
 
 let win: BrowserWindow = null;
+let sendStatus = null;
 const args = process.argv.slice(1),
   serve = args.some(val => val === '--serve');
 
@@ -67,6 +68,7 @@ function createWindow(): BrowserWindow {
 
 try {
   app.allowRendererProcessReuse = true;
+  Logger.Log().debug('TRYYYYYYYY'); 
 
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
@@ -84,6 +86,7 @@ try {
   });
 
   app.on('activate', () => {
+    Logger.Log().debug('ACIVATED'); 
     // On OS X it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (win === null) {
@@ -112,11 +115,11 @@ try {
   });
 
   autoUpdater.on('download-progress', (progress) => {
-    console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}% (${progress.transferred})`);
-    Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}% (${progress.transferred})`);
+    console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
+    Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
   });
 
-  autoUpdater.on('update-download', (info) => {
+  autoUpdater.on('update-downloaded', (info) => {
     console.log("Update will be installed");
     Logger.Log().debug("Update will be installed");
     autoUpdater.quitAndInstall();
@@ -131,13 +134,10 @@ try {
 
     // If table exists update database
     if(db.tableExists(dbCon)) {
-      console.log('BESTAAAAAAAAAAAT');
       db.updateRow(dbCon, args);
     }
     // Else create a new table
     else {
-      console.log('BESTAAAAAAAAAAAT NIEEEEEEET');
-
       db.createTable(dbCon);
       db.insertRow(dbCon, args);
     }
@@ -147,6 +147,8 @@ try {
   });
 
   ipcMain.on('get-settings', (event) => {
+    Logger.Log().debug("get-settings");
+
     const db = new Settings();
     const dbCon = db.dbConnection();
 
@@ -156,6 +158,7 @@ try {
   
 
   ipcMain.on('check-tableExists', (event) => {
+    Logger.Log().debug('');
     const db = new Settings();
     const dbCon = db.dbConnection();
 
@@ -202,11 +205,21 @@ try {
   ipcMain.on('save-album', (event, args: IAlbum) => {
     Logger.Log().debug('SAVE album');
 
+    // Create database
+    const db = new Library();
+    const dbcon = db.dbConnection();
 
+    db.createTable(dbcon);
+    db.insertRow(dbcon, args);
+    db.dbClose(dbcon);
+
+    if (!fs.existsSync(args.path)){
+      fs.mkdirSync(args.path);
+    }
   });
 
   ipcMain.on('save-pictures', (event, args, y: IAlbum) => {
-    // Album 
+    Logger.Log().debug('save-pictures');
     // Create database
     const db = new Album();
     const dbcon = db.dbConnection();
@@ -265,6 +278,7 @@ try {
   });
 
   ipcMain.on('get-libraries', (event, args: ILibrary) => {
+    Logger.Log().debug('get-libraries');
 
         // Create database
     const db = new Library();
@@ -280,6 +294,7 @@ try {
   });
 
   ipcMain.on('get-collections', (event, args: ILibrary) => {
+    Logger.Log().debug('get-collections');
 
         // Create database
     const db = new Collection();
