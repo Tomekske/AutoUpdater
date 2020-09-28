@@ -94,6 +94,9 @@ try {
     }
   });
 
+
+  autoUpdater.checkForUpdates();
+  
   autoUpdater.on('checking-for-update', () => {
     console.log("Checking for updates");
     Logger.Log().debug("Checking for updates");
