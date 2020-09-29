@@ -1,7 +1,8 @@
-import { app, BrowserWindow, screen, ipcMain } from 'electron';
+import { app, BrowserWindow, screen, ipcMain, remote } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
+
 //import * as sqlite from 'sqlite3';
 import * as sqlite from 'better-sqlite3';
 import { Logger } from './logger';
@@ -14,6 +15,7 @@ import { Album } from './shared/database/album';
 import { cpuUsage, electron } from 'process';
 import { BaseFlow } from './shared/database/baseFlow';
 import { autoUpdater } from 'electron-updater';
+import { Updater } from './shared/updater/updater';
 
 let win: BrowserWindow = null;
 let sendStatus = null;
@@ -95,38 +97,46 @@ try {
   });
 
 
-  autoUpdater.checkForUpdates();
-  
-  autoUpdater.on('checking-for-update', () => {
-    console.log("Checking for updates");
-    Logger.Log().debug("Checking for updates");
-  });
+  //autoUpdater.checkForUpdates();
+  const updater = new Updater();
 
-  autoUpdater.on('update-available', (info) => {
-    console.log("Update available");
-    Logger.Log().debug("Update available");
-  });
+  updater.checkForUpdates();
+  updater.isUpdateAvailable();
+  updater.isUpdateNotAvailable();
+  updater.error();
+  updater.downloadProgress();
+  updater.updateDownloaded();
+  Logger.Log().debug("HET WERKTTTTTTTTTTTTT");
+  // autoUpdater.on('checking-for-update', () => {
+  //   console.log("Checking for updates");
+  //   Logger.Log().debug("Checking for updates");
+  // });
 
-  autoUpdater.on('update-not-available', (info) => {
-    console.log("Update not available");
-    Logger.Log().debug("Update not available");
-  });
+  // autoUpdater.on('update-available', (info) => {
+  //   console.log("Update available");
+  //   Logger.Log().debug("Update available");
+  // });
 
-  autoUpdater.on('error', (error) => {
-    console.log("error");
-    Logger.Log().debug("error");
-  });
+  // autoUpdater.on('update-not-available', (info) => {
+  //   console.log("Update not available");
+  //   Logger.Log().debug("Update not available");
+  // });
 
-  autoUpdater.on('download-progress', (progress) => {
-    console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
-    Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
-  });
+  // autoUpdater.on('error', (error) => {
+  //   console.log("error");
+  //   Logger.Log().debug("error");
+  // });
 
-  autoUpdater.on('update-downloaded', (info) => {
-    console.log("Update will be installed");
-    Logger.Log().debug("Update will be installed");
-    autoUpdater.quitAndInstall();
-  });
+  // autoUpdater.on('download-progress', (progress) => {
+  //   console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
+  //   Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
+  // });
+
+  // autoUpdater.on('update-downloaded', (info) => {
+  //   console.log("Update will be installed");
+  //   Logger.Log().debug("Update will be installed");
+  //   autoUpdater.quitAndInstall();
+  // });
 
 
   ipcMain.on('save-settings', (event, args) => {
