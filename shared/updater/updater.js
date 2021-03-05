@@ -11,7 +11,7 @@ var Updater = /** @class */ (function () {
      * Updater constructor
      */
     function Updater() {
-        console.log("Updater-constructor");
+        logger_1.Logger.Log().error("Updater-constructor");
         electron_updater_1.autoUpdater.checkForUpdates();
     }
     /**
@@ -19,8 +19,8 @@ var Updater = /** @class */ (function () {
      */
     Updater.prototype.checkForUpdates = function () {
         electron_updater_1.autoUpdater.on('checking-for-updatee', function (info) {
-            console.log("Checking for updates: " + info);
-            logger_1.Logger.Log().debug("Checking for updates: " + info);
+            logger_1.Logger.Log().error("Checking for updates: " + info);
+            logger_1.Logger.Log().error("Checking for updates: " + info);
         });
     };
     /**
@@ -28,8 +28,8 @@ var Updater = /** @class */ (function () {
      */
     Updater.prototype.isUpdateAvailable = function () {
         electron_updater_1.autoUpdater.on('update-available', function (info) {
-            console.log("Update available: " + info);
-            logger_1.Logger.Log().debug("Update available: " + info.releaseNotes);
+            logger_1.Logger.Log().error("Update available: " + info);
+            logger_1.Logger.Log().error("Update available: " + info.releaseNotes);
         });
     };
     /**
@@ -37,8 +37,8 @@ var Updater = /** @class */ (function () {
      */
     Updater.prototype.isUpdateNotAvailable = function () {
         electron_updater_1.autoUpdater.on('update-not-available', function (info) {
-            console.log("Update not available: " + info);
-            logger_1.Logger.Log().debug("Update not available: " + info);
+            logger_1.Logger.Log().error("Update not available: " + info);
+            logger_1.Logger.Log().error("Update not available: " + info);
         });
     };
     /**
@@ -46,7 +46,7 @@ var Updater = /** @class */ (function () {
      */
     Updater.prototype.error = function () {
         electron_updater_1.autoUpdater.on('error', function (error) {
-            logger_1.Logger.Log().debug("error: " + error);
+            logger_1.Logger.Log().error("error: " + error);
         });
     };
     /**
@@ -54,7 +54,7 @@ var Updater = /** @class */ (function () {
      */
     Updater.prototype.downloadProgress = function () {
         electron_updater_1.autoUpdater.on('download-progress', function (progress) {
-            logger_1.Logger.Log().debug("Update download speed: " + progress.bytesPerSecond + " - Download " + progress.percent);
+            logger_1.Logger.Log().error("Update download speed: " + progress.bytesPerSecond + " - Download " + progress.percent);
         });
     };
     /**
@@ -62,7 +62,7 @@ var Updater = /** @class */ (function () {
      */
     Updater.prototype.updateDownloaded = function () {
         electron_updater_1.autoUpdater.on('update-downloaded', function (info) {
-            logger_1.Logger.Log().debug("Update is being installed: " + info);
+            logger_1.Logger.Log().error("Update is being installed: " + info);
             electron_updater_1.autoUpdater.quitAndInstall();
         });
     };

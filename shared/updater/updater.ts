@@ -18,8 +18,7 @@ export class Updater {
      * Method to check for new updates
      */
     checkForUpdates() {
-        autoUpdater.on('checking-for-updatee', (info) => {
-            Logger.Log().error(`Checking for updates: ${info}`);
+        autoUpdater.on('checking-for-update', (info) => {
             Logger.Log().error(`Checking for updates: ${info}`);
         });    
     }
@@ -30,7 +29,6 @@ export class Updater {
     isUpdateAvailable() {
         autoUpdater.on('update-available', (info) => {
             Logger.Log().error(`Update available: ${info}`);
-            Logger.Log().error(`Update available: ${info.releaseNotes}`);
         });    
     }
 
@@ -39,7 +37,6 @@ export class Updater {
      */
     isUpdateNotAvailable() {
         autoUpdater.on('update-not-available', (info) => {
-            Logger.Log().error(`Update not available: ${info}`);
             Logger.Log().error(`Update not available: ${info}`);
         });        
     }
