@@ -1,6 +1,6 @@
 {
   "name": "Picturebot",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "description": "Angular 10 with Electron (Typescript + SASS + Hot Reload)",
   "homepage": "https://github.com/Tomekske/AutoUpdater",
   "author": {

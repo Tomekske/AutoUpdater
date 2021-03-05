@@ -10,7 +10,7 @@ export class Updater {
      * Updater constructor
      */
     constructor() {
-        console.log("Updater-constructor");
+       Logger.Log().error("Updater-constructor");
         autoUpdater.checkForUpdates();
     }
 
@@ -19,8 +19,8 @@ export class Updater {
      */
     checkForUpdates() {
         autoUpdater.on('checking-for-updatee', (info) => {
-            console.log(`Checking for updates: ${info}`);
-            Logger.Log().debug(`Checking for updates: ${info}`);
+            Logger.Log().error(`Checking for updates: ${info}`);
+            Logger.Log().error(`Checking for updates: ${info}`);
         });    
     }
 
@@ -29,8 +29,8 @@ export class Updater {
      */
     isUpdateAvailable() {
         autoUpdater.on('update-available', (info) => {
-            console.log(`Update available: ${info}`);
-            Logger.Log().debug(`Update available: ${info.releaseNotes}`);
+            Logger.Log().error(`Update available: ${info}`);
+            Logger.Log().error(`Update available: ${info.releaseNotes}`);
         });    
     }
 
@@ -39,8 +39,8 @@ export class Updater {
      */
     isUpdateNotAvailable() {
         autoUpdater.on('update-not-available', (info) => {
-            console.log(`Update not available: ${info}`);
-            Logger.Log().debug(`Update not available: ${info}`);
+            Logger.Log().error(`Update not available: ${info}`);
+            Logger.Log().error(`Update not available: ${info}`);
         });        
     }
 
@@ -49,7 +49,7 @@ export class Updater {
      */
     error() {
         autoUpdater.on('error', (error) => {
-            Logger.Log().debug(`error: ${error}`);
+            Logger.Log().error(`error: ${error}`);
         });
     }
 
@@ -58,7 +58,7 @@ export class Updater {
      */
     downloadProgress() {
         autoUpdater.on('download-progress', (progress) => {
-            Logger.Log().debug(`Update download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
+            Logger.Log().error(`Update download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
         });
     }
 
@@ -67,7 +67,7 @@ export class Updater {
      */
     updateDownloaded() {
         autoUpdater.on('update-downloaded', (info) => {
-            Logger.Log().debug(`Update is being installed: ${info}`);
+            Logger.Log().error(`Update is being installed: ${info}`);
             autoUpdater.quitAndInstall();
         });
     }
