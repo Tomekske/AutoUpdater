@@ -1,5 +1,6 @@
 import { ipcRenderer } from 'electron';
 import { IAlbum, IBase, IFlow, ILegacy } from '../database/interfaces';
+import { Logger } from '../logger/logger';
 
 /**
  * Static class contains methods to communicate with the backend 
@@ -257,5 +258,14 @@ export class IpcFrontend {
      */
     static startOrganizingAlbum(album: IAlbum) {
         ipcRenderer.sendSync("start-organizing-album", album);
+    }
+
+    static checkForUpdate() {
+        // Request 
+        ipcRenderer.send("check-for-update", "looool");
+        ipcRenderer.on('is-update-available', (event, isUpdate) => {
+          console.log(`UPDATE IS NOT AVAILABLE: ${isUpdate}`);
+          Logger.Log().error(`RENDERER: checkForUpdate -> ${isUpdate}`);
+        });
     }
 }

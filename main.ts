@@ -1,4 +1,4 @@
-import { app, BrowserWindow, screen, protocol } from 'electron';
+import { app, BrowserWindow, screen, protocol, ipcMain } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
@@ -99,7 +99,8 @@ try {
 
   // Check for new updates
   if(Helper.isProduction(true)) {
-    checkForUpdates(win);
+    // checkForUpdates();
+    IpcBackend.checkForUpdate();
   }
 
   Api.defaultSettings();
@@ -111,6 +112,11 @@ try {
   ipcLibraries();
   ipcPictures();
   ipcSettings();
+
+  
+
+
+
 } catch (e) {
   // Catch Error
   // throw e;
@@ -186,13 +192,13 @@ function ipcSettings() {
 /**
  * Function to check for application updates
  */
-function checkForUpdates(win: BrowserWindow) {
-  const updater = new Updater(win);
+function checkForUpdates() {
+  // const updater = new Updater();
 
-  updater.checkForUpdates();
-  updater.isUpdateAvailable();
-  updater.isUpdateNotAvailable();
-  updater.error();
-  updater.downloadProgress();
-  updater.updateDownloaded();
+  // updater.checkForUpdates();
+  // updater.isUpdateAvailable();
+  // updater.isUpdateNotAvailable();
+  // updater.error();
+  // updater.downloadProgress();
+  // updater.updateDownloaded();
 }

@@ -125,10 +125,7 @@ export class PicturesComponent implements OnInit {
       }
     });
 
-
-    this._electron.ipcRenderer.on("update", (event, data)=> {
-      Logger.Log().error("WE ZIJN EEEEEER");
-    });
+    IpcFrontend.checkForUpdate();
   }
 
   ngOnDestroy() {

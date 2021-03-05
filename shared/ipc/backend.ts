@@ -19,6 +19,7 @@ import { DbSocialMediaFlow } from '../database/dbSocialMediaFlow';
 import { WatcherEdited } from '../watcher/watcherEdited';
 import { WatcherSocialMedia } from '../watcher/watcherSocialMedia';
 import { Api } from '../database/api';
+import { Updater } from '../updater/updater';
 
 let oldAlbum: IAlbum;
 let stalkerEdited: any;
@@ -812,5 +813,23 @@ export class IpcBackend {
 
             event.returnValue = "";
         });
+    }
+
+    static checkForUpdate() {
+        ipcMain.on('check-for-update', (event, arg) => {
+            Logger.Log().error("MAIN: checkForUpdate");
+            console.log(arg) // prints "ping"
+
+            const updater = new Updater(event);
+
+            updater.checkForUpdates();
+            updater.isUpdateAvailable();
+            updater.isUpdateNotAvailable();
+            updater.error();
+            updater.downloadProgress();
+            updater.updateDownloaded();
+          
+            // event.reply('asynchronous-reply', 'pong');
+          })
     }
 }

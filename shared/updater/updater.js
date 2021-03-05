@@ -10,8 +10,8 @@ var Updater = /** @class */ (function () {
     /**
      * Updater constructor
      */
-    function Updater(win) {
-        this.win = win;
+    function Updater(event) {
+        this.event = event;
         logger_1.Logger.Log().error("Updater-constructor");
         electron_updater_1.autoUpdater.checkForUpdates();
     }
@@ -27,8 +27,10 @@ var Updater = /** @class */ (function () {
      * Method to check whether an update is available
      */
     Updater.prototype.isUpdateAvailable = function () {
+        var _this = this;
         electron_updater_1.autoUpdater.on('update-available', function (info) {
             logger_1.Logger.Log().error("Update available: " + info);
+            _this.event.reply("is-update-available", true);
         });
     };
     /**
@@ -38,13 +40,7 @@ var Updater = /** @class */ (function () {
         var _this = this;
         electron_updater_1.autoUpdater.on('update-not-available', function (info) {
             logger_1.Logger.Log().error("Update not available: " + info);
-            if (_this.win) {
-                logger_1.Logger.Log().error("WIN BESTAAAT");
-                _this.win.webContents.send("update", true);
-            }
-            else {
-                logger_1.Logger.Log().error("WIN BESTAAAT NIEEEEEEEEET");
-            }
+            _this.event.reply("is-update-available", false);
         });
     };
     /**

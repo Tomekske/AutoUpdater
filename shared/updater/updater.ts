@@ -6,15 +6,15 @@ import { Logger } from '../logger/logger';
  * Class to automatically update the application
  */
 export class Updater { 
-    win: BrowserWindow;
+    event: any;
 
     /**
      * Updater constructor
      */
-    constructor(win: BrowserWindow) {
-        this.win = win;
+    constructor(event) {
+        this.event = event;
 
-       Logger.Log().error("Updater-constructor");
+        Logger.Log().error("Updater-constructor");
         autoUpdater.checkForUpdates();
     }
 
@@ -33,6 +33,7 @@ export class Updater {
     isUpdateAvailable() {
         autoUpdater.on('update-available', (info) => {
             Logger.Log().error(`Update available: ${info}`);
+            this.event.reply("is-update-available", true);
         });
     }
 
@@ -42,12 +43,7 @@ export class Updater {
     isUpdateNotAvailable() {
         autoUpdater.on('update-not-available', (info) => {
             Logger.Log().error(`Update not available: ${info}`);
-            if(this.win) {
-                Logger.Log().error(`WIN BESTAAAT`);
-                this.win.webContents.send("update", true);
-            } else {
-                Logger.Log().error(`WIN BESTAAAT NIEEEEEEEEET`);
-            }
+            this.event.reply("is-update-available", false);
         });        
     }
 
