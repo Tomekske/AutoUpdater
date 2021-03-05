@@ -1,0 +1,34 @@
+<div fxLayout="row" style="overflow-y: auto;">
+  <!-- Flow Selector -->
+  <div fxFlex="85" [ngClass]="{'window': albums.length !== 0}">
+    <mat-tab-group animationDuration="0ms" (selectedTabChange)="selectedFlowEvent($event)" #tab>
+    <div *ngFor="let flow of flows">
+      <mat-tab label="{{ flow }}"></mat-tab>
+    </div>
+    </mat-tab-group>
+    <!-- Picture display -->
+    <div style="padding-top: 1%;">
+      <ng-opengallery
+        [datasource]='this.previewList'
+        [config]='this.config'
+        (error)='galleryOnError($event)'
+        (selection)='galleryOnSelection($event)'
+        (open)='galleryOnOpen($event)'>
+      </ng-opengallery>
+    </div>
+  </div>
+  <!-- Album selector -->
+  <div fxFlex="15" fxLayoutAlign="center center">
+    <div class="fixedPosition" *ngIf="isVisible">
+      <mat-card>
+        <mat-selection-list [multiple]="false">
+          <div mat-subheader>Select album</div>
+          <mat-list-option *ngFor="let album of albums;let i = index" [value]="album" (click)="selectedAlbumEvent(album)" [selected]="i==0">
+            <div mat-line>{{album.name}}</div>
+            <div mat-line> {{album.date}} </div>
+          </mat-list-option>
+        </mat-selection-list>
+      </mat-card>
+    </div>
+  </div>
+</div>

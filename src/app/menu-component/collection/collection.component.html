@@ -1,0 +1,121 @@
+<div fxLayout="column" fxFlex="25"></div>
+    <div style="padding-top: 68px;" fxLayout="column" fxFlex="50">
+    <form class="example-form" [formGroup]="collectionForm">
+        <div style="padding-top: 1%;">
+            <mat-card>
+                <h4>Link a library to a collection</h4>
+                <mat-form-field appearance="fill" style="width: 100%;">
+                    <mat-label>Select library</mat-label>
+                    <mat-select [disabled]="libraries.length === 0" formControlName="library" id="select-library-id">
+                        <mat-option value="option" *ngFor="let library of libraries" value="{{ library }}">{{ library }}</mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-error *ngIf="libraries.length === 0" id="error-library-id">
+                    {{ message.Library }}
+                </mat-error>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Name</mat-label>
+                    <input formControlName="name" matInput type="text" id="input-name-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('name')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-name-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.name.errors?.required && !form.name.dirty" id="error-name-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.name.errors?.pattern" id="error-name-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+            </mat-card> 
+        </div>
+        <div style="padding-top: 1%;">
+            <mat-card>
+                <h4>Configure flow names</h4>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Base flow</mat-label>
+                    <input formControlName="base" matInput type="text" id="input-base-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('base')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-base-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.base.errors?.required && !form.base.dirty" id="error-base-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.base.errors?.pattern" id="error-base-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Preview flow</mat-label>
+                    <input formControlName="preview" matInput type="text" id="input-preview-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('preview')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-preview-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.preview.errors?.required && !form.preview.dirty" id="error-preview-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.preview.errors?.pattern" id="error-preview-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Backup flow</mat-label>
+                    <input formControlName="backup" matInput type="text" id="input-backup-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('backup')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-backup-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.backup.errors?.required && !form.backup.dirty" id="error-backup-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.backup.errors?.pattern" id="error-backup-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Favorites flow</mat-label>
+                    <input formControlName="favorites" matInput type="text" id="input-favorites-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('favorites')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-favorites-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.favorites.errors?.required && !form.favorites.dirty" id="error-favorites-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.favorites.errors?.pattern" id="error-favorites-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Edited flow</mat-label>
+                    <input formControlName="edited" matInput type="text" id="input-edited-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('edited')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-edited-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.edited.errors?.required && !form.edited.dirty" id="error-edited-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.edited.errors?.pattern" id="error-edited-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+                <mat-form-field style="width: 100%;">
+                    <mat-label>Social-Media flow</mat-label>
+                    <input formControlName="socialMedia" matInput type="text" id="input-socialmedia-id">
+                    <button mat-button matSuffix mat-icon-button aria-label="Clear" (click)="clearInput('socialMedia')" matTooltip="Clear input" [matTooltipPosition]="'right'" id="btn-clear-socialMedia-id">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                    <mat-error *ngIf="form.socialMedia.errors?.required && !form.socialMedia.dirty" id="error-socialMedia-id">
+                        {{ message.Required }}
+                    </mat-error>
+                    <mat-error *ngIf="form.socialMedia.errors?.pattern" id="error-socialMedia-id">
+                        {{ message.NoWhiteSpaces }}
+                    </mat-error>  
+                </mat-form-field>
+                <div align="end">
+                    <button  mat-fab color="primary" aria-label="Example icon-button with a heart icon" (click)="saveCollection()" id="btn-save-form-collection-id">
+                        <mat-icon>save</mat-icon>
+                    </button>
+                </div>
+            </mat-card>
+        </div>
+    </form>
+</div>
+<div fxLayout="column" fxFlex="25"></div>

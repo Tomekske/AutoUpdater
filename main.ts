@@ -1,26 +1,16 @@
-import { app, BrowserWindow, screen, ipcMain, remote } from 'electron';
+import { app, BrowserWindow, screen, protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
-
-//import * as sqlite from 'sqlite3';
-import * as sqlite from 'better-sqlite3';
-import { Logger } from './logger';
-import { Settings } from './shared/database/settings';
-import { Library } from './shared/database/library';
-import { ILibrary, ISettings, ICollection, IAlbum, IFlow, IBase } from './shared/database/interfaces';
-import { fstat } from 'fs';
-import { Collection } from './shared/database/collection';
-import { Album } from './shared/database/album';
-import { cpuUsage, electron } from 'process';
-import { BaseFlow } from './shared/database/baseFlow';
-import { autoUpdater } from 'electron-updater';
+import { Logger } from './shared/logger/logger';
 import { Updater } from './shared/updater/updater';
+import { IpcBackend } from './shared/ipc/backend';
+import { Helper } from './shared/helper/helper';
+import { Api } from './shared/database/api';
 
 let win: BrowserWindow = null;
-let sendStatus = null;
-const args = process.argv.slice(1),
-  serve = args.some(val => val === '--serve');
+
+const args = process.argv.slice(1), serve = args.some(val => val === '--serve');
 
 function createWindow(): BrowserWindow {
 
@@ -36,13 +26,12 @@ function createWindow(): BrowserWindow {
     webPreferences: {
       nodeIntegration: true,
       allowRunningInsecureContent: (serve) ? true : false,
-      webSecurity: false
-    },
+      webSecurity: false,
+      devTools: Helper.isProduction(true) ? false : true
+    }
   });
 
   if (serve) {
-
-    win.webContents.openDevTools();
 
     require('electron-reload')(__dirname, {
       electron: require(`${__dirname}/node_modules/electron`)
@@ -53,7 +42,7 @@ function createWindow(): BrowserWindow {
     win.loadURL(url.format({
       pathname: path.join(__dirname, 'dist/index.html'),
       protocol: 'file:',
-      slashes: true
+      slashes: false
     }));
   }
 
@@ -65,13 +54,17 @@ function createWindow(): BrowserWindow {
     win = null;
   });
 
+  // Set the browser title
+  win.setTitle(`Picturebot ${app.getVersion()}`);
+  // On startup maximize the browser window
+  win.maximize();
+  win.setMenuBarVisibility(false);
+
   return win;
 }
 
 try {
   app.allowRendererProcessReuse = true;
-  Logger.Log().debug('TRYYYYYYYY'); 
-
   // This method will be called when Electron has finished
   // initialization and is ready to create browser windows.
   // Some APIs can only be used after this event occurs.
@@ -96,8 +89,104 @@ try {
     }
   });
 
+  // Intercept filesystem paths in order to show the pictures from the filesystem
+  app.whenReady().then(() => {
+    protocol.registerFileProtocol('file', (request, callback) => {
+      const pathname = decodeURI(request.url.replace('file:///', ''));
+      callback(pathname);
+    });
+  });
 
-  //autoUpdater.checkForUpdates();
+  // Check for new updates
+  if(Helper.isProduction(true)) {
+    checkForUpdates();
+  }
+
+  Api.defaultSettings();
+
+  // Ipc functions
+  ipcAlbums();
+  ipcCollections();
+  ipcFlows();
+  ipcLibraries();
+  ipcPictures();
+  ipcSettings();
+} catch (e) {
+  // Catch Error
+  // throw e;
+  //logger.Log().debug(e);
+}
+
+/**
+ * Function to encapsulate ipc collections
+ */
+function ipcCollections() {
+  IpcBackend.getCollections();
+  IpcBackend.getAllCollectionWhereCollection();
+  IpcBackend.saveCollection();
+}
+
+/**
+ * Function to encapsulate ipc flows
+ */
+function ipcFlows() {
+  IpcBackend.getTabFlows();
+  IpcBackend.getStartingFlows();
+}
+
+/**
+ * Function to encapsulate ipc libraries
+ */
+function ipcLibraries() {
+  IpcBackend.saveLibrary();
+  IpcBackend.getLibraries();
+}
+
+/**
+ * Function to encapsulate ipc pictures
+ */
+function ipcPictures() {
+  IpcBackend.getBaseFlowPictures();
+  IpcBackend.getPreviewFlowPictures();
+  IpcBackend.getFavoritesFlowPictures();
+  IpcBackend.savePictures();
+  IpcBackend.baseFlowDeletePicture();
+  IpcBackend.previewFlowDeletePicture();
+  IpcBackend.favoriteFlowDeletePicture();
+  IpcBackend.getIsFavoriteBaseFlowWherePreview();
+  IpcBackend.updateFavorited();
+  IpcBackend.saveFavorite();
+  IpcBackend.deleteFavoriteWhereBase();
+  IpcBackend.getEditedFlowPictures();
+  IpcBackend.getSocialMediaFlowPictures();
+}
+
+/**
+ * Function to encapsulate ipc albums
+ */
+function ipcAlbums() {
+  IpcBackend.updateAlbumIsOrganized();
+  IpcBackend.getAlbums();
+  IpcBackend.deleteAlbum();
+  IpcBackend.updateAlbum();
+  IpcBackend.selectedAlbum();
+  IpcBackend.importLegacyAlbum();
+  IpcBackend.startOrganizingAlbum();
+}
+
+/**
+ * Function to encapsulate ipc settings
+ */
+function ipcSettings() {
+  IpcBackend.saveSettings();
+  IpcBackend.getSettings();
+  IpcBackend.checkSettingsEmpty();
+}
+
+/**
+ * Function to check for application updates
+ */
+function checkForUpdates() {
   const updater = new Updater();
 
   updater.checkForUpdates();
@@ -106,225 +195,4 @@ try {
   updater.error();
   updater.downloadProgress();
   updater.updateDownloaded();
-  Logger.Log().debug("HET WERKTTTTTTTTTTTTT");
-  // autoUpdater.on('checking-for-update', () => {
-  //   console.log("Checking for updates");
-  //   Logger.Log().debug("Checking for updates");
-  // });
-
-  // autoUpdater.on('update-available', (info) => {
-  //   console.log("Update available");
-  //   Logger.Log().debug("Update available");
-  // });
-
-  // autoUpdater.on('update-not-available', (info) => {
-  //   console.log("Update not available");
-  //   Logger.Log().debug("Update not available");
-  // });
-
-  // autoUpdater.on('error', (error) => {
-  //   console.log("error");
-  //   Logger.Log().debug("error");
-  // });
-
-  // autoUpdater.on('download-progress', (progress) => {
-  //   console.log(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
-  //   Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
-  // });
-
-  // autoUpdater.on('update-downloaded', (info) => {
-  //   console.log("Update will be installed");
-  //   Logger.Log().debug("Update will be installed");
-  //   autoUpdater.quitAndInstall();
-  // });
-
-
-  ipcMain.on('save-settings', (event, args) => {
-    Logger.Log().debug('SAVE SETTINGS');
-    // Create database
-    const db = new Settings();
-    const dbCon = db.dbConnection();
-
-    // If table exists update database
-    if(db.tableExists(dbCon)) {
-      db.updateRow(dbCon, args);
-    }
-    // Else create a new table
-    else {
-      db.createTable(dbCon);
-      db.insertRow(dbCon, args);
-    }
-    
-    //const row: ISettings = db.queryAll(dbCon);
-    db.dbClose(dbCon);
-  });
-
-  ipcMain.on('get-settings', (event) => {
-    Logger.Log().debug("get-settings");
-
-    const db = new Settings();
-    const dbCon = db.dbConnection();
-
-    const row: ISettings = db.queryAll(dbCon);
-    event.returnValue = row;
-  });
-  
-
-  ipcMain.on('check-tableExists', (event) => {
-    Logger.Log().debug('');
-    const db = new Settings();
-    const dbCon = db.dbConnection();
-
-    event.returnValue = db.tableExists(dbCon);
-  });
-
-  ipcMain.on('save-library', (event, args: ILibrary) => {
-    Logger.Log().debug('SAVE library');
-
-    // Create database
-    const db = new Library();
-    const dbcon = db.dbConnection();
-
-    db.createTable(dbcon);
-    db.insertRow(dbcon, args);
-    db.dbClose(dbcon);
-
-    if (!fs.existsSync(args.path)){
-      fs.mkdirSync(args.path);
-    }
-  });
-
-  ipcMain.on('save-collection', (event, args: ICollection) => {
-    Logger.Log().debug('SAVE collection');
-
-    // Create database
-    const db = new Collection();
-    const dbcon = db.dbConnection();
-
-    if(!db.tableExists(dbcon)) {
-      db.createTable(dbcon);
-    }
-
-    db.insertRow(dbcon, args);
-    db.dbClose(dbcon);
-
-    if (!fs.existsSync(args.path)){
-      fs.mkdir(args.path, err => {
-        console.log(err);
-      });
-    }
-  });
- 
-  ipcMain.on('save-album', (event, args: IAlbum) => {
-    Logger.Log().debug('SAVE album');
-
-    // Create database
-    const db = new Library();
-    const dbcon = db.dbConnection();
-
-    db.createTable(dbcon);
-    db.insertRow(dbcon, args);
-    db.dbClose(dbcon);
-
-    if (!fs.existsSync(args.path)){
-      fs.mkdirSync(args.path);
-    }
-  });
-
-  ipcMain.on('save-pictures', (event, args, y: IAlbum) => {
-    Logger.Log().debug('save-pictures');
-    // Create database
-    const db = new Album();
-    const dbcon = db.dbConnection();
-
-    if(!db.tableExists(dbcon)) {
-      db.createTable(dbcon);
-    }
-
-    db.insertRow(dbcon, y);
-    db.dbClose(dbcon);
-
-    if (!fs.existsSync(y.path)){
-      fs.mkdir(y.path, err => {
-        console.log(err);
-      });
-
-      const dbb = new Collection();
-      const dbbcon = dbb.dbConnection();
-      let flows: IFlow = dbb.queryFlows(dbbcon, y.collection);
-
-      Object.values(flows).forEach(flow => {
-        if(flow != flows.selection) {
-
-          console.log(`FLOW: ${flow} - path: ${path.join(y.path, flow)}`);
-
-          fs.mkdir(path.join(y.path, flow), err => {
-            console.log(err);
-          });
-        }
-
-      });
-      db.dbClose(dbbcon);
-
-      // pictures
-      const picDb = new BaseFlow();
-      const conPic = picDb.dbConnection();
-
-      if(!picDb.tableExists(conPic)) {
-        picDb.createTable(conPic);
-      }
-      
-      args.forEach((picture: IBase) => {
-        const dest: string = path.join(y.collection,`${y.name} ${y.date}`, flows.base, picture.name);
-        console.log(`src: ${picture.source},dest: ${dest}`);
-
-        let x: IBase = { source: picture.source, name: picture.name, destination: dest, selection: 0};
-        picDb.insertRow(conPic, x);
-        fs.copyFile(picture.source, dest, (err) => {
-          if (err) throw err;
-          console.log(`Picture: ${x.destination}`);
-        });
-      });
-
-      picDb.dbClose(conPic);
-    }
-  });
-
-  ipcMain.on('get-libraries', (event, args: ILibrary) => {
-    Logger.Log().debug('get-libraries');
-
-        // Create database
-    const db = new Library();
-    const dbCon = db.dbConnection();
-
-    const exists = db.tableExists(dbCon);
-
-    if(exists) {
-      console.log(db.queryLibraries(dbCon));
-      event.returnValue = db.queryLibraries(dbCon);
-    }
-    //event.returnValue = db.tableExists(dbCon);
-  });
-
-  ipcMain.on('get-collections', (event, args: ILibrary) => {
-    Logger.Log().debug('get-collections');
-
-        // Create database
-    const db = new Collection();
-    const dbCon = db.dbConnection();
-
-    const exists = db.tableExists(dbCon);
-
-    if(exists) {
-      console.log(db.queryCollections(dbCon));
-      event.returnValue = db.queryCollections(dbCon);
-    }
-    //event.returnValue = db.tableExists(dbCon);
-  }); 
-
-} catch (e) {
-  // Catch Error
-  // throw e;
-  //logger.Log().debug(e);
-
 }

@@ -1,51 +1,74 @@
 import { autoUpdater } from 'electron-updater';
-import { truncateSync } from 'fs';
-import { Logger } from '../../logger';
+import { Logger } from '../logger/logger';
 
+/**
+ * Class to automatically update the application
+ */
 export class Updater { 
+
+    /**
+     * Updater constructor
+     */
     constructor() {
+        console.log("Updater-constructor");
         autoUpdater.checkForUpdates();
     }
 
+    /**
+     * Method to check for new updates
+     */
     checkForUpdates() {
-        autoUpdater.on('checking-for-update', () => {
-            Logger.Log().debug("Checking for updates");
+        autoUpdater.on('checking-for-updatee', (info) => {
+            console.log(`Checking for updates: ${info}`);
+            Logger.Log().debug(`Checking for updates: ${info}`);
         });    
     }
 
-    isUpdateAvailable() /*: boolean */{
+    /**
+     * Method to check whether an update is available
+     */
+    isUpdateAvailable() {
         autoUpdater.on('update-available', (info) => {
-            console.log("Update available");
-            Logger.Log().debug("Update available");
+            console.log(`Update available: ${info}`);
+            Logger.Log().debug(`Update available: ${info.releaseNotes}`);
         });    
-        //return true;
     }
 
-    isUpdateNotAvailable()/*: boolean*/{
+    /**
+     * Method to check whether an update is not available
+     */
+    isUpdateNotAvailable() {
         autoUpdater.on('update-not-available', (info) => {
-            Logger.Log().debug("Update not available");
+            console.log(`Update not available: ${info}`);
+            Logger.Log().debug(`Update not available: ${info}`);
         });        
-        //return true;
     }
 
+    /**
+     * Method to check whether an error occurred
+     */
     error() {
         autoUpdater.on('error', (error) => {
             Logger.Log().debug(`error: ${error}`);
         });
     }
 
+    /**
+     * Method to check the download progress of the update
+     */
     downloadProgress() {
         autoUpdater.on('download-progress', (progress) => {
-            Logger.Log().debug(`Download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
+            Logger.Log().debug(`Update download speed: ${progress.bytesPerSecond} - Download ${progress.percent}`);
         });
     }
 
+    /**
+     * Method to install the update
+     */
     updateDownloaded() {
         autoUpdater.on('update-downloaded', (info) => {
-            Logger.Log().debug("Update will be installed");
+            Logger.Log().debug(`Update is being installed: ${info}`);
             autoUpdater.quitAndInstall();
         });
     }
-
-
 }

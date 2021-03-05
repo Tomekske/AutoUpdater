@@ -1,26 +1,36 @@
 import Database = require("better-sqlite3");
-import { Logger } from '../../logger';
+import { Logger } from '../logger/logger';
+import { Helper } from '../helper/helper';
+import { App } from '../helper/enums';
+import * as path from 'path';
 
 export abstract class Sqlite {
-    path: string = "C:\\Users\\joost\\Documents\\Log\\food.db";
+    protected productionDb: string = path.join(Helper.pathMyDocuments(), App.name, App.productionDb);
+    protected debugDb: string = path.join(Helper.pathMyDocuments(), App.name, App.debugDb);
+    protected connection;
 
+    /**
+     * Base constructor for derived classes 
+     */
     constructor() {
+        this.connection = new Database(Helper.isProduction(true) ? this.productionDb : this.debugDb , { verbose: console.log });
+
+        // Create table when it doesn't exists
+        if(!this.tableExists()) {
+            this.createTable();
+        }
     }
 
-    abstract createTable(db): void;
-    abstract tableExists(db): boolean;
-    abstract insertRow(db, args): void;
-    abstract updateRow(db, args): void;
-    abstract queryAll(db);
+    protected abstract createTable(): void;
+    protected abstract tableExists(): boolean;
+    abstract insertRow(args): void;
+    abstract queryAll();
 
-    dbConnection() {
-        Logger.Log().debug("Successfully created db");
-        
-        return new Database(this.path, { verbose: console.log });
-    }
-
-    dbClose(db) {
-        db.close();
+    /**
+     * Close the database
+     */
+    dbClose() {
         Logger.Log().debug('Close the database connection.');
+        this.connection.close();
     }
 }

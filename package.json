@@ -1,11 +1,11 @@
 {
   "name": "Picturebot",
-  "version": "2.0.6",
+  "version": "2.1.5",
   "description": "Angular 10 with Electron (Typescript + SASS + Hot Reload)",
-  "homepage": "https://github.com/maximegris/angular-electron",
+  "homepage": "https://github.com/Tomekske/AutoUpdater",
   "author": {
-    "name": "Maxime GRIS",
-    "email": "maxime.gris@gmail.com"
+    "name": "Tomek Joostens",
+    "email": "joostenstomek@gmail.com"
   },
   "keywords": [
     "angular",
@@ -31,12 +31,10 @@
     "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
     "electron:local": "npm run build:prod && npx electron .",
     "electron:build": "npm run build:prod && electron-builder build",
-    "test": "ng test --watch=false",
+    "test": "mocha",
     "test:watch": "ng test",
-    "e2e": "npm run build:prod && cross-env TS_NODE_PROJECT='e2e/tsconfig.e2e.json' mocha --timeout 300000 --require ts-node/register e2e/**/*.e2e.ts",
     "version": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md",
     "lint": "ng lint",
-    "pack": "ng build --prod && electron-packager . --no-prune --ignore=/node_modules --ignore=/e2e --ignore=/src --overwrite",
     "msi": "electron-builder",
     "prerelease": "npm run build -- --prod",
     "release": "npm run build:prod && electron-builder"
@@ -58,6 +56,7 @@
     "@angular/platform-browser": "10.0.3",
     "@angular/platform-browser-dynamic": "10.0.3",
     "@angular/router": "10.0.3",
+    "@cucumber/cucumber": "7.0.0-rc.0",
     "@ngx-translate/core": "13.0.0",
     "@ngx-translate/http-loader": "6.0.0",
     "@types/jasmine": "3.5.11",
@@ -90,25 +89,49 @@
     "rxjs": "6.6.0",
     "spectron": "11.1.0",
     "ts-node": "8.10.2",
+    "tsc-watch": "4.2.9",
     "tslib": "2.0.0",
     "typescript": "3.9.6",
     "wait-on": "5.0.1",
-    "webdriver-manager": "12.1.7",
+    "webdriver-manager": "^12.1.7",
     "zone.js": "0.10.3"
   },
   "engines": {
     "node": ">=10.13.0"
   },
   "dependencies": {
+    "@angular/animations": "^10.0.0 || ^11.0.0-0",
+    "@angular/cdk": "10.2.5",
+    "@angular/flex-layout": "10.0.0-beta.32",
+    "@angular/forms": "^10.0.0 || ^11.0.0-0",
+    "@angular/localize": "10.1.6",
+    "@angular/material": "10.2.5",
+    "@angular/material-moment-adapter": "11.0.0",
+    "@crystalui/angular-lightbox": "1.1.8",
     "@fortawesome/fontawesome-free": "5.14.0",
+    "@ng-bootstrap/ng-bootstrap": "7.0.0",
+    "@ng-bootstrap/schematics": "2.0.0-alpha.1",
+    "@popperjs/core": "2.5.3",
+    "@syncfusion/ej2-angular-lists": "18.3.35",
+    "@thisissoon/angular-inviewport": "4.2.2",
     "@types/better-sqlite3": "5.4.0",
     "better-sqlite3": "7.1.0",
     "body-parser": "1.19.0",
+    "bootstrap": "4.5.3",
     "bootstrap-material-design": "4.1.1",
+    "electron-chromedriver": "^11.0.0",
     "electron-updater": "4.3.5",
+    "hasha": "5.2.1",
+    "jquery": "3.5.1",
     "log4js": "6.3.0",
     "material-icons": "0.3.1",
-    "ngx-dropzone": "2.2.2"
+    "moment": "2.29.1",
+    "ng-material-multilevel-menu": "4.12.2",
+    "ng-opengallery": "0.0.4",
+    "ngx-dropzone": "2.2.2",
+    "node-watch": "0.7.1",
+    "popper.js": "1.16.1",
+    "watchr": "6.9.0"
   },
   "build": {
     "appId": "Picturebot",
@@ -132,7 +155,7 @@
       {
         "provider": "github",
         "owner": "Tomekske",
-        "repo": "AutoUpdater"
+        "repo": "Picturebot"
       }
     ]
   }
