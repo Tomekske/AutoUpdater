@@ -99,7 +99,7 @@ try {
 
   // Check for new updates
   if(Helper.isProduction(true)) {
-    checkForUpdates();
+    checkForUpdates(win);
   }
 
   Api.defaultSettings();
@@ -186,8 +186,8 @@ function ipcSettings() {
 /**
  * Function to check for application updates
  */
-function checkForUpdates() {
-  const updater = new Updater();
+function checkForUpdates(win: BrowserWindow) {
+  const updater = new Updater(win);
 
   updater.checkForUpdates();
   updater.isUpdateAvailable();

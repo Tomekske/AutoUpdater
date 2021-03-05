@@ -1,3 +1,4 @@
+import { BrowserWindow } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { Logger } from '../logger/logger';
 
@@ -5,11 +6,14 @@ import { Logger } from '../logger/logger';
  * Class to automatically update the application
  */
 export class Updater { 
+    win: BrowserWindow;
 
     /**
      * Updater constructor
      */
-    constructor() {
+    constructor(win: BrowserWindow) {
+        this.win = win;
+
        Logger.Log().error("Updater-constructor");
         autoUpdater.checkForUpdates();
     }
@@ -29,7 +33,7 @@ export class Updater {
     isUpdateAvailable() {
         autoUpdater.on('update-available', (info) => {
             Logger.Log().error(`Update available: ${info}`);
-        });    
+        });
     }
 
     /**
@@ -38,6 +42,12 @@ export class Updater {
     isUpdateNotAvailable() {
         autoUpdater.on('update-not-available', (info) => {
             Logger.Log().error(`Update not available: ${info}`);
+            if(this.win) {
+                Logger.Log().error(`WIN BESTAAAT`);
+                this.win.webContents.send("update", true);
+            } else {
+                Logger.Log().error(`WIN BESTAAAT NIEEEEEEEEET`);
+            }
         });        
     }
 

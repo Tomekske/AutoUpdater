@@ -10,7 +10,8 @@ var Updater = /** @class */ (function () {
     /**
      * Updater constructor
      */
-    function Updater() {
+    function Updater(win) {
+        this.win = win;
         logger_1.Logger.Log().error("Updater-constructor");
         electron_updater_1.autoUpdater.checkForUpdates();
     }
@@ -18,8 +19,7 @@ var Updater = /** @class */ (function () {
      * Method to check for new updates
      */
     Updater.prototype.checkForUpdates = function () {
-        electron_updater_1.autoUpdater.on('checking-for-updatee', function (info) {
-            logger_1.Logger.Log().error("Checking for updates: " + info);
+        electron_updater_1.autoUpdater.on('checking-for-update', function (info) {
             logger_1.Logger.Log().error("Checking for updates: " + info);
         });
     };
@@ -29,16 +29,22 @@ var Updater = /** @class */ (function () {
     Updater.prototype.isUpdateAvailable = function () {
         electron_updater_1.autoUpdater.on('update-available', function (info) {
             logger_1.Logger.Log().error("Update available: " + info);
-            logger_1.Logger.Log().error("Update available: " + info.releaseNotes);
         });
     };
     /**
      * Method to check whether an update is not available
      */
     Updater.prototype.isUpdateNotAvailable = function () {
+        var _this = this;
         electron_updater_1.autoUpdater.on('update-not-available', function (info) {
             logger_1.Logger.Log().error("Update not available: " + info);
-            logger_1.Logger.Log().error("Update not available: " + info);
+            if (_this.win) {
+                logger_1.Logger.Log().error("WIN BESTAAAT");
+                _this.win.webContents.send("update", true);
+            }
+            else {
+                logger_1.Logger.Log().error("WIN BESTAAAT NIEEEEEEEEET");
+            }
         });
     };
     /**
