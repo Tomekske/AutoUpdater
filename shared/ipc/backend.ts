@@ -815,21 +815,31 @@ export class IpcBackend {
         });
     }
 
+    /**
+     * Static method to check wether an update is available
+     */
     static checkForUpdate() {
+        // Fetch for updates
         ipcMain.on('check-for-update', (event, arg) => {
-            Logger.Log().error("MAIN: checkForUpdate");
-            console.log(arg) // prints "ping"
+            Logger.Log().debug("check-for-update");
 
             const updater = new Updater(event);
-
             updater.checkForUpdates();
             updater.isUpdateAvailable();
             updater.isUpdateNotAvailable();
             updater.error();
+        });
+
+        // Download and install update
+        ipcMain.on('check-for-update-install', (event, arg) => {
+            Logger.Log().debug("check-for-update-install");
+            console.log(arg)
+
+            const updater = new Updater(event);
+            updater.checkForUpdates();
+            updater.error();
             updater.downloadProgress();
             updater.updateDownloaded();
-          
-            // event.reply('asynchronous-reply', 'pong');
-          })
+        });
     }
 }

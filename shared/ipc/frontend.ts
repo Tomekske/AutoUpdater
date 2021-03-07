@@ -1,3 +1,4 @@
+import { DialogReleaseNotesComponent } from 'app/dialogs/dialog-release-notes/dialog-release-notes.component';
 import { ipcRenderer } from 'electron';
 import { IAlbum, IBase, IFlow, ILegacy } from '../database/interfaces';
 import { Logger } from '../logger/logger';
@@ -260,12 +261,20 @@ export class IpcFrontend {
         ipcRenderer.sendSync("start-organizing-album", album);
     }
 
-    static checkForUpdate() {
-        // Request 
-        ipcRenderer.send("check-for-update", "looool");
+    /**
+     * Static method to check wether an update is available
+     * @param dialog Dialog object
+     */
+    static checkForUpdate(dialog) {
+        // Fetch for updates
+        ipcRenderer.send("check-for-update");
         ipcRenderer.on('is-update-available', (event, isUpdate) => {
-          console.log(`UPDATE IS NOT AVAILABLE: ${isUpdate}`);
-          Logger.Log().error(`RENDERER: checkForUpdate -> ${isUpdate}`);
+            // Only update the application on the user's approval
+            if(isUpdate) {
+                dialog.open(DialogReleaseNotesComponent, { height: '800px', width: '600px' }).afterClosed().subscribe(() => {
+                    ipcRenderer.send("check-for-update-install");
+                });
+            }
         });
     }
 }

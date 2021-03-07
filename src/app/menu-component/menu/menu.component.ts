@@ -9,8 +9,10 @@ import { App } from '../../../../shared/helper/enums';
 import { IpcFrontend } from '../../../../shared/ipc/frontend';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogImportLegacyComponent } from 'app/dialogs/dialog-import-legacy/dialog-import-legacy.component';
+import { DialogReleaseNotesComponent } from 'app/dialogs/dialog-release-notes/dialog-release-notes.component';
 import { Router } from '@angular/router';
 import { Location} from '@angular/common'
+
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',

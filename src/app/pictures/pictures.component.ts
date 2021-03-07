@@ -125,7 +125,7 @@ export class PicturesComponent implements OnInit {
       }
     });
 
-    IpcFrontend.checkForUpdate();
+    IpcFrontend.checkForUpdate(this._dialog);
   }
 
   ngOnDestroy() {
