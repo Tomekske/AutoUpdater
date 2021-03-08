@@ -265,16 +265,50 @@ export class IpcFrontend {
      * Static method to check wether an update is available
      * @param dialog Dialog object
      */
-    static checkForUpdate(dialog) {
+    static checkForUpdate(dialog, snack) {
         // Fetch for updates
-        ipcRenderer.send("check-for-update");
-        ipcRenderer.on('is-update-available', (event, isUpdate) => {
-            // Only update the application on the user's approval
-            if(isUpdate) {
-                dialog.open(DialogReleaseNotesComponent, { height: '800px', width: '600px' }).afterClosed().subscribe(() => {
-                    ipcRenderer.send("check-for-update-install");
+        let isUpdate: boolean = ipcRenderer.sendSync("check-for-update", "");
+
+        if(isUpdate) {
+            Logger.Log().error("JA DER IS NE UPDATE");
+            dialog.open(DialogReleaseNotesComponent, { height: '800px', width: '600px' }).afterClosed().subscribe((isDownload: boolean) => {
+                    if(isDownload) {
+                        ipcRenderer.send("check-for-update-install", "");
+                        snack.open("Downloading update!", "Dismiss", {
+                            duration: 4000,
+                            horizontalPosition: "end"
+                        });
+
+
+                    } else {
+                        snack.open("Download canceled!", "Dismiss", {
+                            duration: 4000,
+                            horizontalPosition: "end"
+                        });
+                    }
                 });
-            }
-        });
+        } else {
+            Logger.Log().error("GEENE UPDATE");
+        }
+        // ipcRenderer.on('is-update-available', (event, isUpdate) => {
+        //     Logger.Log().error("JA DER IS NE UPDATE");
+
+            // Only update the application on the user's approval
+            // if(isUpdate) {
+            //     snack.open("Downloading update!", "Dismiss", {
+            //         duration: 4000,
+            //         horizontalPosition: "end"
+            //     });
+                // dialog.open(DialogReleaseNotesComponent, { height: '800px', width: '600px' }).afterClosed().subscribe((isDownload: boolean) => {
+                //     if(isDownload) {
+                //         ipcRenderer.send("check-for-update-install", "");
+                //         snack.open("Downloading update!", "Dismiss", {
+                //             duration: 4000,
+                //             horizontalPosition: "end"
+                //         });
+                //     }
+                // });
+            //}
+        // });
     }
 }

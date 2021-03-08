@@ -821,19 +821,18 @@ export class IpcBackend {
     static checkForUpdate() {
         // Fetch for updates
         ipcMain.on('check-for-update', (event, arg) => {
-            Logger.Log().debug("check-for-update");
+            Logger.Log().error("check-for-update");
 
             const updater = new Updater(event);
             updater.checkForUpdates();
             updater.isUpdateAvailable();
             updater.isUpdateNotAvailable();
-            updater.error();
+            // event.reply("is-update-available", true);
         });
 
         // Download and install update
         ipcMain.on('check-for-update-install', (event, arg) => {
-            Logger.Log().debug("check-for-update-install");
-            console.log(arg)
+            Logger.Log().error("check-for-update-install");
 
             const updater = new Updater(event);
             updater.checkForUpdates();

@@ -33,7 +33,7 @@ export class Updater {
     isUpdateAvailable() {
         autoUpdater.on('update-available', (info) => {
             Logger.Log().error(`Update available: ${info}`);
-            this.event.reply("is-update-available", true);
+            this.event.returnValue = true;
         });
     }
 
@@ -43,7 +43,7 @@ export class Updater {
     isUpdateNotAvailable() {
         autoUpdater.on('update-not-available', (info) => {
             Logger.Log().error(`Update not available: ${info}`);
-            this.event.reply("is-update-available", false);
+            this.event.returnValue = false;
         });        
     }
 

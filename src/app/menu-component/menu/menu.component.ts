@@ -127,6 +127,22 @@ selectedCollection: ICollection;
             onSelected: () => {
               Helper.openInExplorer("D:\\e2e", this._snack);
             }
+          },
+          {
+            label: 'Release notes',
+            icon: 'new_releases',
+            onSelected: () => {
+              // Picture deletion dialog
+              this._dialog.open(DialogReleaseNotesComponent, { height: '800px', width: '600px' }).afterClosed().subscribe((isDownload: boolean) => {
+                if(isDownload) {
+                  this._electron.ipcRenderer.send("check-for-update-install");
+                  this._snack.open("Downloading update!", "Dismiss", {
+                    duration: 4000,
+                    horizontalPosition: "end"
+                  });
+                }
+              });
+            }
           }
         ]
       });  

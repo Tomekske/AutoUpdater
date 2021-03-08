@@ -30,7 +30,7 @@ var Updater = /** @class */ (function () {
         var _this = this;
         electron_updater_1.autoUpdater.on('update-available', function (info) {
             logger_1.Logger.Log().error("Update available: " + info);
-            _this.event.reply("is-update-available", true);
+            _this.event.returnValue = true;
         });
     };
     /**
@@ -40,7 +40,7 @@ var Updater = /** @class */ (function () {
         var _this = this;
         electron_updater_1.autoUpdater.on('update-not-available', function (info) {
             logger_1.Logger.Log().error("Update not available: " + info);
-            _this.event.reply("is-update-available", false);
+            _this.event.returnValue = false;
         });
     };
     /**
